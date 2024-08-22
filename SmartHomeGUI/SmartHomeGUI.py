@@ -22,8 +22,8 @@ class WindowClass(QMainWindow, from_class):
         super().__init__()
         self.setupUi(self)
         self.connEnv = serial.Serial(port='/dev/ttyACM0', baudrate=9600, timeout=1)
-        # self.connHeater = serial.Serial(port='/dev/ttyACM1', baudrate=9600, timeout=1)
-        self.connDevice = serial.Serial(port='/dev/ttyACM2', baudrate=9600, timeout=1)
+        self.connHeater = serial.Serial(port='/dev/ttyACM1', baudrate=9600, timeout=1)
+        self.connDevice = serial.Serial(port='/dev/ttyACM0', baudrate=9600, timeout=1)
         
         self.recv = Receiver(self.connEnv, self.connDevice)
         self.recv.update_signal.connect(self.update_sensor_data)
@@ -139,49 +139,49 @@ class WindowClass(QMainWindow, from_class):
         if self.controlBtn_Dehum_toggle.text() == 'ON':
             self.controlBtn_Dehum_toggle.setText('OFF')
             self.controlBtn_Dehum_toggle.setStyleSheet("background-color: rgb(200, 0, 0);")
-            # self.sendByte(b'SHM', 0) # 0을 보내면 문을 닫기
+            self.sendByte(b'SHM', 0) # 0을 보내면 문을 닫기
         else:
             self.controlBtn_Dehum_toggle.setText('ON')
             self.controlBtn_Dehum_toggle.setStyleSheet("background-color: rgb(0, 150, 0);")
-            # self.sendByte(b'SHM', 1) # 1을 보내면 문을 열기
+            self.sendByte(b'SHM', 1) # 1을 보내면 문을 열기
         return
     
     def control_Light_toggle(self):
         if self.controlBtn_Light_toggle.text() == 'ON':
             self.controlBtn_Light_toggle.setText('OFF')
             self.controlBtn_Light_toggle.setStyleSheet("background-color: rgb(200, 0, 0);")
-            # self.sendByte(b'SLI', 0) # 0을 보내면 불 끄기
+            self.sendByte(b'SLI', 0) # 0을 보내면 불 끄기
         else:
             self.controlBtn_Light_toggle.setText('ON')
             self.controlBtn_Light_toggle.setStyleSheet("background-color: rgb(0, 150, 0);")
-            # self.sendByte(b'SLI', 1) # 1을 보내면 불 켜기
+            self.sendByte(b'SLI', 1) # 1을 보내면 불 켜기
     
     def control_Blind_toggle(self):
         if self.controlBtn_Blind_toggle.text() == 'Open':
             self.controlBtn_Blind_toggle.setText('Close')
             self.controlBtn_Blind_toggle.setStyleSheet("background-color: rgb(200, 0, 0);")
-            # self.sendByte(b'SBM', 0) # 0을 보내면 블라인드 닫기
+            self.sendByte(b'SBM', 0) # 0을 보내면 블라인드 닫기
         else:
             self.controlBtn_Blind_toggle.setText('Open')
             self.controlBtn_Blind_toggle.setStyleSheet("background-color: rgb(0, 150, 0);")
-            # self.sendByte(b'SBM', 1) # 1을 보내면 블라인드 열기
+            self.sendByte(b'SBM', 1) # 1을 보내면 블라인드 열기
     
     def control_Door_toggle(self):
         if self.controlBtn_Door_toggle.text() == 'Open':
             self.controlBtn_Door_toggle.setText('Close')
             self.controlBtn_Door_toggle.setStyleSheet("background-color: rgb(200, 0, 0);")
-            # self.sendByte(b'SDM', 0) # 0을 보내면 문 닫기
+            self.sendByte(b'SDM', 0) # 0을 보내면 문 닫기
         else:
             self.controlBtn_Door_toggle.setText('Open')
             self.controlBtn_Door_toggle.setStyleSheet("background-color: rgb(0, 150, 0);")
-            # self.sendByte(b'SDM', 1) # 1을 보내면 문 열기
+            self.sendByte(b'SDM', 1) # 1을 보내면 문 열기
         return
 
     def sendByte(self, command, data=0):
         if command in [b'SAC', b'SHM', b'SLI', b'SBM', b'SDM']:
             req_data = struct.pack('<3sB', command, data) + b'\n'
             print("sendByte: ", req_data)
-            self.connEnv.write(req_data)
+            self.connDevice.write(req_data)
         return
     
     def update_sensor_data(self, humidity, temperature):
@@ -231,6 +231,7 @@ class Receiver(QThread):
         self.wait()
         self.connEnv.close()
         self.connDevice.close()
+        
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
