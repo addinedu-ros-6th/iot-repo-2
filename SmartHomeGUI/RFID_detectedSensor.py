@@ -28,6 +28,7 @@ class WindowClass(QMainWindow, from_class) :
         self.prevLcdValue = 9
         self.cur = mydb.cursor(buffered=True)
         self.cycleTime = 500
+        self.doorStatus = False # false : closed / true : opended
            
         self.activationStatus = False
         self.connSensorReader = serial.Serial(port='/dev/ttyACM0', baudrate= 9600, timeout= 1)
@@ -48,11 +49,22 @@ class WindowClass(QMainWindow, from_class) :
         self.RegistrationBtn_Register.clicked.connect(self.Register) #CARD에 UID, Name 등록하기 버튼
         self.Registration_Table.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch) #등록창 넓이 조절
         self.RegistrationBtn_Remove.clicked.connect(self.uidDelete)
+        self.doorOpen.clicked.connect(self.dooropen)
+        self.doorClose.clicked.connect(self.doorclose)
 
         self.timer = QTimer()
         self.timer.setInterval(self.cycleTime)
         self.timer.timeout.connect(self.getStatus)
         self.timer.start()
+
+    def dooropen(self):
+        self.sendHomeItemController(b'SDM',1)
+        return
+      
+    def doorclose(self):
+        if self.doorStatus == False:
+            self.sendHomeItemController(b'SDM',0)
+        return      
 
     def getStatus(self):
         print("")
@@ -60,28 +72,32 @@ class WindowClass(QMainWindow, from_class) :
         time.sleep(0.05)
         self.sendSensorReader(b'GDS')
         time.sleep(0.05)
-        self.sendSensorReader(b'GCS')
+        # self.sendSensorReader(b'GCS')
+        time.sleep(0.05)
         return
     
     def detectedDoor(self, value):
         print("")  
-        if (value == 1 and self.prevLcdValue != 1):
-            self.sendDisplayController(b'SLC',2)  
-        elif (value == 0 and self.prevLcdValue != 0):
-            self.sendDisplayController(b'SLC',1)    
+        if (value == 1 and self.prevLcdValue != 1): 
+            self.sendDisplayController(b'SLC',2)    # door close
+            self.doorStatus = False  
+            time.sleep(0.5)       
+            self.sendHomeItemController(b'SDM',0)   
+        elif (value == 0 and self.prevLcdValue != 0): 
+            self.sendDisplayController(b'SLC',1)    # door open
+            self.doorStatus = True
         self.prevLcdValue = value  
         return
     
     def detectedCard(self, value):
         print("")  
         if value == 1:
-            self.Current_mode.setText("INDOOR")
+            self.Current_mode.setText("Indoor")
             self.Current_mode.setStyleSheet("background-color : lightgreen")
         elif value == 0:
-            self.Current_mode.setText("OUTDOOR")
-            self.Current_mode.setStyleSheet("background-color : red")    
+            self.Current_mode.setText("Outdoor")
+            self.Current_mode.setStyleSheet("background-color : lightblue")    
         return
-    
     
     def detectedTag(self, uid):
         print("detected Tag")
@@ -93,9 +109,11 @@ class WindowClass(QMainWindow, from_class) :
         for i in range(len(self.uidList)):
             if self.getUid == self.uidList[i]: #현재는 무조건 8자를 입력해야 인식
                 self.sendDisplayController(b'SLC',0)
+                if self.doorStatus == False:
+                    self.sendHomeItemController(b'SDM',1)
             else:
                 self.sendDisplayController(b'SLC',4)
-
+         
     def uidDelete(self):
         row = self.Registration_Table.currentRow() #선택한 아이템이 몇번째 row인지 저장
         uid = self.Registration_Table.item(row,1).text() #username
@@ -167,6 +185,11 @@ class WindowClass(QMainWindow, from_class) :
         print("sendDisplayController = ", set_data)
         return
     
+    def sendHomeItemController(self, command, data = 0):
+        set_data = struct.pack('<3sBc', command, data, b'\n')
+        self.connSensorReader.write(set_data)  ################conn 컨트롤러 변경 필요
+        print("sendHomeItemController = ", set_data)
+        return
 
 class Receiver(QThread):
     detectedTag = pyqtSignal(bytes)
@@ -201,10 +224,10 @@ class Receiver(QThread):
                         print('return_SID')
                     elif cmd == 'GDS':
                         print('return_GDS')
-                        self.detectedDoor.emit(res[4]) #sensor 값만
-                    elif cmd == 'GDS':
-                        print('return_GDS')
-                        self.detectedCard.emit(res[4]) #sensor 값만
+                        self.detectedDoor.emit(res[3]) #sensor 값만
+                    elif cmd == 'GCS':
+                        print('return_GCS')
+                        self.detectedCard.emit(res[3]) #sensor 값만
                 else:
                     # self.unDetected.emit()
                     pass
