@@ -10,7 +10,7 @@ import time
 import numpy as np
 import datetime
 
-from_class =  uic.loadUiType("./IOT_Project_2/GUI/GUI_v7.ui")[0]
+from_class =  uic.loadUiType("GUI_v7.ui")[0]
 
 if hasattr(Qt, 'AA_EnableHighDpiScaling'):
     PyQt5.QtWidgets.QApplication.setAttribute(Qt.AA_EnableHighDpiScaling, True)
@@ -23,8 +23,9 @@ class WindowClass(QMainWindow, from_class):
         self.setupUi(self)
         self.connEnv = serial.Serial(port='/dev/ttyACM0', baudrate=9600, timeout=1)
         # self.connHeater = serial.Serial(port='/dev/ttyACM1', baudrate=9600, timeout=1)
-        self.connDevice = serial.Serial(port='/dev/ttyACM2', baudrate=9600, timeout=1)
-        
+        self.connDevice = serial.Serial(port='/dev/ttyACM1', baudrate=9600, timeout=1)
+        time.sleep(2) 
+
         self.recv = Receiver(self.connEnv, self.connDevice)
         self.recv.update_signal.connect(self.update_sensor_data)
         self.recv.ac_status_signal.connect(self.update_ac_status)
@@ -57,11 +58,11 @@ class WindowClass(QMainWindow, from_class):
         
         self.gth_timer = QTimer(self)
         self.gth_timer.timeout.connect(self.send_gth_command)
-        self.gth_timer.start(30000)  # 30초마다 GTH 명령 전송
+        self.gth_timer.start(5000)  # 5초마다 GTH 명령 전송
 
         self.temp_timer = QTimer(self)
         self.temp_timer.timeout.connect(self.update_temperature)
-        self.temp_timer.start(30000)  # 30초마다 온도 업데이트
+        self.temp_timer.start(5000)  # 5초마다 온도 업데이트
 
     def send_gth_command(self):
         self.connEnv.write(b'GTH\n')
@@ -99,11 +100,13 @@ class WindowClass(QMainWindow, from_class):
         print(f"Updating AC status: {message}")
         if message == "AC ON":
             self.controlBtn_AC_toggle.setText('ON')
+            self.controlBtn_AC_toggle.setStyleSheet("background-color: rgb(0, 150, 0);")
             self.ac_on = True
             if self.last_real_temperature is not None:
                 self.simulated_temperature = self.last_real_temperature  # AC를 켤 때 마지막 실제 온도로 초기화
         elif message == "AC OFF":
             self.controlBtn_AC_toggle.setText('OFF')
+            self.controlBtn_AC_toggle.setStyleSheet("background-color: rgb(200, 0, 0);")
             self.acIT_on = False
             
     def update_sensor_data(self, humidity, temperature):
@@ -196,7 +199,13 @@ class WindowClass(QMainWindow, from_class):
 
         self.lcdTemp.display(self.simulated_temperature)
         print(f"Updated sensor data: Humidity={humidity}, Temperature={self.simulated_temperature}")
-    
+     
+    def stop(self):
+        self.is_running = False
+        self.wait()
+        self.connEnv.close()
+        self.connDevice.close()
+
 class Receiver(QThread):
     update_signal = pyqtSignal(float, float)
     ac_status_signal = pyqtSignal(str)
@@ -210,15 +219,12 @@ class Receiver(QThread):
     def run(self):
         self.is_running = True
         while self.is_running:
-            if self.connEnv.readable():
-                res = self.connEnv.read_until(b'\n') # 개행 문자가 나올 때까지 데이터 수신
-                if len(res) > 0:
-                    res = res.decode().strip()  # 수신된 데이터를 디코딩하고 공백 제거
-                    cmd = res[:3]  # 첫 세 문자를 명령으로 인식
-                    if cmd == 'GTH':
-                        _, data = res.split("GTH")
-                        humidity, temperature = map(float, data.split(","))
-                        self.update_signal.emit(humidity, temperature)
+            if self.connEnv.in_waiting:
+                res = self.connEnv.readline().decode().strip()
+                if res.startswith("GTH"):
+                    _, data = res.split("GTH")
+                    humidity, temperature = map(float, data.split(","))
+                    self.update_signal.emit(humidity, temperature)
                         
             if self.connDevice.in_waiting:
                 res = self.connDevice.readline().decode().strip()
@@ -226,11 +232,7 @@ class Receiver(QThread):
                 if res.startswith("AC"):
                     self.ac_status_signal.emit(res)
 
-    def stop(self):
-        self.is_running = False
-        self.wait()
-        self.connEnv.close()
-        self.connDevice.close()
+   
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
