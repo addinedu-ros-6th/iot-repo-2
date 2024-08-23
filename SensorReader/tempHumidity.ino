@@ -1,6 +1,6 @@
 #include <DHT.h>
 
-#define DHTPIN A0     // DHT11 센서가 연결된 디지털 핀
+#define DHTPIN A2     // DHT11 센서가 연결된 디지털 핀
 #define DHTTYPE DHT11 // DHT 11 센서 사용
 
 DHT dht(DHTPIN, DHTTYPE);
