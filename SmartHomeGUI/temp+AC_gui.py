@@ -29,11 +29,11 @@ class Receiver(QThread):
                     humidity, temperature = map(float, data.split(","))
                     self.update_signal.emit(humidity, temperature)
             
-            if self.ac_conn.in_waiting:
-                res = self.ac_conn.readline().decode().strip()
-                print(f"Received from AC Arduino: {res}")
-                if res.startswith("AC"):
-                    self.ac_status_signal.emit(res)
+            # if self.ac_conn.in_waiting:
+            #     res = self.ac_conn.readline().decode().strip()
+            #     print(f"Received from AC Arduino: {res}")
+            #     if res.startswith("AC"):
+            #         self.ac_status_signal.emit(res)
 
 class WindowClass(QMainWindow, form_class):
     def __init__(self):
