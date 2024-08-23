@@ -84,7 +84,7 @@ void loop() {
             Serial.println("Unknown command");
             break;
         }
-
+      }
       else if (strncmp(cmd, "SBM", 3) == 0 && (value == 0 || value == 1)) 
       {
         if (value == 1) 
@@ -147,7 +147,7 @@ void setLEDColor(byte value)
       break;
     case 1:
       // Set LED to ACRED
-      digitalWrite(LightED, HIGH);
+      digitalWrite(LightRED, HIGH);
       digitalWrite(LightGREEN, HIGH);
       digitalWrite(LightBlue, HIGH);
       break;
