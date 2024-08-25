@@ -1,13 +1,14 @@
 import sys
 import serial
 import struct
+import time
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 from PyQt5 import uic
 import PyQt5
 
-from_class = uic.loadUiType("./IOT_Project_2/GUI/GUI_v7.ui")[0]
+from_class = uic.loadUiType("./IOT_Project_2/GUI/GUI_v8.ui")[0]
 
 if hasattr(Qt, 'AA_EnableHighDpiScaling'):
     PyQt5.QtWidgets.QApplication.setAttribute(Qt.AA_EnableHighDpiScaling, True)
@@ -18,8 +19,10 @@ class MainWindow(QMainWindow, from_class):
     def __init__(self):
         super().__init__()
         self.setupUi(self)
+        time.sleep(1)
         
-        self.conn = serial.Serial(port='/dev/ttyACM0', baudrate=9600, timeout=1)
+        # self.conn = serial.Serial(port='/dev/ttyACM0', baudrate=9600, timeout=1)
+        self.conn = serial.Serial(port='com3', baudrate=9600, timeout=1)
         self.recv = Receiver(self.conn)
         self.recv.doorActionExecuted.connect(self.onDoorActionExecuted)
         self.recv.start()
@@ -158,23 +161,23 @@ class MainWindow(QMainWindow, from_class):
         alarm_status = schedule.get("alarm", "OFF")
 
         if light_status == "ON":
-            # self.sendByte(b'SLI', 1)  # Light ON
+            self.sendByte(b'SLI', 1)  # Light ON
             print(f"Light is ON")
         else:
-            # self.sendByte(b'SLI', 0)  # Light OFF
+            self.sendByte(b'SLI', 0)  # Light OFF
             print(f"Light is OFF")
 
         if blind_status == "Open":
-            # self.sendByte(b'SBM', 1)  # Blind Open
+            self.sendByte(b'SBM', 1)  # Blind Open
             print(f"Blind is Open")
         else:
-            # self.sendByte(b'SBM', 0)  # Blind Closed
+            self.sendByte(b'SBM', 0)  # Blind Closed
             print(f"Blind is Closed")
 
         if alarm_status == "ON":
             self.sendByte(b'SBU', 1)  # Alarm ON
             print(f"Alarm is ON")
-            QTimer.singleShot(2000, lambda: self.sendByte(b'SBU', 0))  # 3초 후 Alarm OFF
+            # QTimer.singleShot(2000, lambda: self.sendByte(b'SBU', 0))  # 3초 후 Alarm OFF
         else:
             self.sendByte(b'SBU', 0)  # Alarm OFF
             print(f"Alarm is OFF")
@@ -228,7 +231,7 @@ class MainWindow(QMainWindow, from_class):
                 # print(f"Selected day: {day}")
 
         # Get the scheduled time and status of Light, Blind, and Alarm
-        scheduled_time = self.IndoorTime_Wakeup.time().toString("HH:mm")
+        scheduled_time = self.IndoorTime_Wakeup_2.time().toString("HH:mm")
         wakeup_light_status = "ON" if self.button_states[self.IndoorBtn_Wakeup_Light] else "OFF"
         wakeup_blind_status = "Open" if self.button_states[self.IndoorBtn_Wakeup_Blind] else "Closed"
         wakeup_alarm_status = "ON" if self.button_states[self.IndoorBtn_Wakeup_Alarm] else "OFF"
