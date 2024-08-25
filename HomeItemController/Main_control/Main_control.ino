@@ -19,8 +19,8 @@ const int IN2 = 9; // ULN 2003 드라이버
 const int IN3 = 10; // ULN 2003 드라이버
 const int IN4 = 11; // ULN 2003 드라이버
 const int buzzerPin = 13;
-unsigned long buzzerStartTime = 0; // 부저가 켜진 시간을 저장할 변수
-bool buzzerOn = false; // 부저가 켜져 있는지 여부를 추적
+// unsigned long buzzerStartTime = 0; // 부저가 켜진 시간을 저장할 변수
+// bool buzzerOn = false; // 부저가 켜져 있는지 여부를 추적
 
 // 4선 스텝퍼 모터 초기화
 AccelStepper stepper(AccelStepper::FULL4WIRE, IN1, IN3, IN2, IN4);
@@ -144,8 +144,8 @@ void loop() {
         {
           Serial.println("SBU1");
           tone(buzzerPin, 50000); // 50kHz 톤 발생 (부저 켜기)
-          buzzerStartTime = millis(); // 부저가 켜진 시간을 기록
-          buzzerOn = true; // 부저가 켜졌음을 표시
+          // buzzerStartTime = millis(); // 부저가 켜진 시간을 기록
+          // buzzerOn = true; // 부저가 켜졌음을 표시
         } else if (value == 0) 
         {
           Serial.println("SBU0");
@@ -156,12 +156,12 @@ void loop() {
   }
   stepper.run(); // 스텝퍼 모터를 이동시킴
 
-  // 부저가 켜진 상태에서 1초가 지났는지 확인
-  if (buzzerOn && (millis() - buzzerStartTime >= 1000)) 
-  {
-    noTone(buzzerPin); // 부저 끄기
-    buzzerOn = false; // 부저가 꺼졌음을 표시
-  }
+  // // 부저가 켜진 상태에서 1초가 지났는지 확인
+  // if (buzzerOn && (millis() - buzzerStartTime >= 1000)) 
+  // {
+  //   noTone(buzzerPin); // 부저 끄기
+  //   buzzerOn = false; // 부저가 꺼졌음을 표시
+  // }
 }
 
 void setLEDColor(byte value) 

@@ -8,7 +8,7 @@ from PyQt5.QtCore import *
 from PyQt5 import uic
 import PyQt5
 
-from_class = uic.loadUiType("./IOT_Project_2/GUI/GUI_v8.ui")[0]
+from_class =  uic.loadUiType("./SmartHomeGUI/SmartHomeGUI.ui")[0]
 
 if hasattr(Qt, 'AA_EnableHighDpiScaling'):
     PyQt5.QtWidgets.QApplication.setAttribute(Qt.AA_EnableHighDpiScaling, True)
@@ -38,12 +38,10 @@ class MainWindow(QMainWindow, from_class):
             "Sunday": self.IndoorBtn_Sun,
         }
         
-        # 요일 버튼에 대한 이벤트 연결
         for button in self.weekday_buttons.values():
             self.button_states[button] = False
             button.setStyleSheet("background-color: rgb(255, 255, 255);")  # 기본 색상 white로 설정
             button.clicked.connect(lambda _, b=button: self.toggle_button_state(b))
-
         setting_button = [
             self.IndoorBtn_Wakeup_Light, self.IndoorBtn_Wakeup_Blind, self.IndoorBtn_Wakeup_Alarm,
             self.IndoorBtn_Sleep_Light, self.IndoorBtn_Sleep_Blind, self.IndoorBtn_Sleep_Alarm
@@ -53,16 +51,13 @@ class MainWindow(QMainWindow, from_class):
             self.button_states[button] = False
             button.setStyleSheet("background-color: rgb(255, 255, 255);")
             button.clicked.connect(lambda _, b=button: self.toggle_button_state(b))
-            
         self.IndoorCombo_Select.currentIndexChanged.connect(self.update_day_selection)
         self.IndoorBtn_Saveconfig.clicked.connect(self.save_configuration)
         
-        # 타이머 설정
-        self.timer = QTimer(self)
-        self.timer.timeout.connect(self.update_time)
-        self.timer.start(5000)  # 2초마다 타이머가 동작
-
-        # 사용자 설정 시간 저장
+        # 사용자 설정 시간 저장 및 타이머 설정
+        self.schedule_timer = QTimer(self)
+        self.schedule_timer.timeout.connect(self.update_time)
+        self.schedule_timer.start(5000)  # 5초마다 타이머가 동작
         self.scheduled_times = []
         self.setup_alarm_table()
         self.load_scheduled_times_from_table()
@@ -119,20 +114,14 @@ class MainWindow(QMainWindow, from_class):
         }
         current_day_english = day_translation.get(current_day, current_day)
 
-        # 디버깅: 예약된 작업을 확인
-        print(f"[DEBUG] Checking scheduled actions for {current_day} at {current_time_only}...")
-
         for schedule in self.scheduled_times:
-            # 방어 코드: 'action' 키가 존재하는지 확인
+            # 'action' 키가 존재하는지 확인
             if 'action' not in schedule:
                 print(f"[DEBUG] Error: 'action' key is missing in schedule {schedule}. Skipping...")
                 continue
-
             # 'count' 키가 없는 경우 초기화
             if 'count' not in schedule:
                 schedule['count'] = 0
-
-            print(f"[DEBUG] Comparing '{schedule['day']}' with '{current_day}' and '{schedule['time']}' with '{current_time_only}'")
             
             # 공백 제거 및 소문자로 변환하여 비교
             scheduled_day = schedule['day'].strip().lower()
@@ -143,44 +132,33 @@ class MainWindow(QMainWindow, from_class):
             if scheduled_day == current_day_clean and scheduled_time == current_time_clean:
                 if schedule["count"] == 0:  # 현재 카운트가 0일 때만 실행
                     print(f"[DEBUG] Match found! Executing action '{schedule['action']}'")
-                    self.execute_action(schedule)
+                    self.schedule_execute(schedule)
                     schedule["count"] += 1  # 카운트 증가
                 break
-            else:
-                print(f"[DEBUG] No match: {scheduled_day} != {current_day_clean} or {scheduled_time} != {current_time_clean}")
-        else:
-            print(f"[DEBUG] No matching scheduled actions found.")
 
-    def execute_action(self, schedule):
+    def schedule_execute(self, schedule):
         action = schedule.get("action")
         print(f"Executing action: {action}")
         
-        # Light, Blind, Alarm 상태에 따른 동작 수행
         light_status = schedule.get("light", "OFF")
         blind_status = schedule.get("blind", "Closed")
         alarm_status = schedule.get("alarm", "OFF")
 
         if light_status == "ON":
             self.sendByte(b'SLI', 1)  # Light ON
-            print(f"Light is ON")
         else:
             self.sendByte(b'SLI', 0)  # Light OFF
-            print(f"Light is OFF")
 
         if blind_status == "Open":
             self.sendByte(b'SBM', 1)  # Blind Open
-            print(f"Blind is Open")
         else:
             self.sendByte(b'SBM', 0)  # Blind Closed
-            print(f"Blind is Closed")
 
         if alarm_status == "ON":
             self.sendByte(b'SBU', 1)  # Alarm ON
-            print(f"Alarm is ON")
             # QTimer.singleShot(2000, lambda: self.sendByte(b'SBU', 0))  # 3초 후 Alarm OFF
         else:
             self.sendByte(b'SBU', 0)  # Alarm OFF
-            print(f"Alarm is OFF")
 
     def sendByte(self, command, data=0):
         req_data = struct.pack('<3sB', command, data) + b'\n'
@@ -226,9 +204,8 @@ class MainWindow(QMainWindow, from_class):
         selected_days = []
         
         for day, button in self.weekday_buttons.items():
-            if self.button_states[button]:  # Process only selected days
+            if self.button_states[button]: 
                 selected_days.append(day)
-                # print(f"Selected day: {day}")
 
         # Get the scheduled time and status of Light, Blind, and Alarm
         scheduled_time = self.IndoorTime_Wakeup_2.time().toString("HH:mm")
@@ -236,7 +213,6 @@ class MainWindow(QMainWindow, from_class):
         wakeup_blind_status = "Open" if self.button_states[self.IndoorBtn_Wakeup_Blind] else "Closed"
         wakeup_alarm_status = "ON" if self.button_states[self.IndoorBtn_Wakeup_Alarm] else "OFF"
 
-        # Process each selected day
         for day in selected_days:
             # Remove any existing entry for the same day in the table
             for row in range(self.Alarm_tableWidget.rowCount()):
@@ -266,7 +242,6 @@ class MainWindow(QMainWindow, from_class):
             self.Alarm_tableWidget.setItem(row_position, 3, QTableWidgetItem(wakeup_light_status))
             self.Alarm_tableWidget.setItem(row_position, 4, QTableWidgetItem(wakeup_blind_status))
             self.Alarm_tableWidget.setItem(row_position, 5, QTableWidgetItem(wakeup_alarm_status))
-            # print(f"Added row for day={day}, Time={scheduled_time}, Light={wakeup_light_status}, Blind={wakeup_blind_status}, Alarm={wakeup_alarm_status}")
         
         self.sort_table_by_days()
 
@@ -280,10 +255,8 @@ class MainWindow(QMainWindow, from_class):
             "Thursday": 5,
             "Friday": 6
         }
-        # Create a list to hold the rows with their day and corresponding sort order
         rows = []
 
-        # Extract the relevant data from each row
         for row in range(self.Alarm_tableWidget.rowCount()):
             day_item = self.Alarm_tableWidget.item(row, 0)
             if day_item:  # Ensure the day item exists
@@ -292,10 +265,9 @@ class MainWindow(QMainWindow, from_class):
                 row_data = [self.Alarm_tableWidget.item(row, col).text() for col in range(self.Alarm_tableWidget.columnCount())]
                 rows.append((order, row_data))
 
-        # Sort rows by the custom order
         rows.sort(key=lambda x: x[0])
 
-        # Clear the table and reinsert rows in the sorted order
+        # 초기화 후 정렬된 데이터로 테이블 채우기
         self.Alarm_tableWidget.setRowCount(0)
         for _, row_data in rows:
             row_position = self.Alarm_tableWidget.rowCount()
