@@ -47,7 +47,7 @@ class WindowClass(QMainWindow, from_class):
         time.sleep(2)
 
         
-        # self.recv = Receiver(self.connEnv, self.connDevice)
+        self.recv = Receiver(self.connEnv, self.connDevice)
         # self.activationStatus = False
         # self.connSensorReader = serial.Serial(port='/dev/ttyACM2', baudrate= 9600, timeout= 1)
         # self.connHeaterController = serial.Serial(port='/dev/ttyACM1', baudrate= 9600, timeout= 1)
@@ -72,7 +72,7 @@ class WindowClass(QMainWindow, from_class):
         # self.RegistrationBtn_Remove.clicked.connect(self.uidDelete)
         # self.doorOpen.clicked.connect(self.dooropen)
         # self.doorClose.clicked.connect(self.doorclose)
-
+        
         self.recv.update_signal.connect(self.update_sensor_data)
         self.recv.ac_status_signal.connect(self.update_ac_status)
         self.recv.start()
@@ -628,7 +628,7 @@ class WindowClass(QMainWindow, from_class):
             self.controlBtn_AC_toggle.setText('OFF')
             self.controlBtn_AC_toggle.setStyleSheet("background-color: rgb(200, 0, 0);")
             self.acIT_on = False
-            
+    
     def update_sensor_data(self, humidity, temperature):
         self.lcdHumidity.display(humidity)
         self.last_real_temperature = temperature  # 실제 온도 저장
@@ -637,11 +637,17 @@ class WindowClass(QMainWindow, from_class):
             self.simulated_temperature = temperature  # 첫 번째 온도 데이터로 초기화
 
         if not self.ac_on and not self.heater_on:
-            self.simulated_temperature = temperature  # 에어컨과 히터가 둘다 꺼져있으면 실제온도로 가져옴
+            temp_diff = self.last_real_temperature - self.simulated_temperature
+            if abs(temp_diff) < 0.1:
+                self.simulated_temperature = self.last_real_temperature
+            elif temp_diff > 0:
+                self.simulated_temperature = min(self.last_real_temperature, self.simulated_temperature + 0.5)
+            else:
+                self.simulated_temperature = max(self.last_real_temperature, self.simulated_temperature - 0.5)  # 에어컨과 히터가 둘다 꺼져있으면 실제온도로 가져옴
 
         self.lcdTemp.display(self.simulated_temperature)
-        print(f"Updated sensor data: Humidity={humidity}, Real Temperature={temperature}, Simulated Temperature={self.simulated_temperature}")
-
+        print(f"Updated sensor data: Humidity={humidity}, Real Temperature={temperature}, Simulated Temperature={self.simulated_temperature:.1f}")
+    
     def update_temperature(self):
         if self.simulated_temperature is None or self.last_real_temperature is None:
             return
@@ -701,7 +707,7 @@ class WindowClass(QMainWindow, from_class):
             self.sendHeater(b'SHT',0) # HT OFF
         self.lcdTemp.display(round(self.simulated_temperature, 1))
         print(f"Updated simulated temperature: {self.simulated_temperature:.1f}")
-
+    
     def control_Dehum_toggle(self):
         if self.controlBtn_Dehum_toggle.text() == 'ON':
             self.controlBtn_Dehum_toggle.setText('OFF')
@@ -751,18 +757,6 @@ class WindowClass(QMainWindow, from_class):
             self.connDevice.write(req_data)
         return
 
-    def update_sensor_data(self, humidity, temperature):
-        self.lcdHumidity.display(humidity)
-        self.last_real_temperature = temperature  # 실제 온도 저장
-        
-        if self.simulated_temperature is None:
-            self.simulated_temperature = temperature  # 첫 번째 온도 데이터로 초기화
-
-        if not self.ac_on:
-            self.simulated_temperature = temperature  # AC가 꺼져 있을 때 실제 온도로 업데이트
-
-        self.lcdTemp.display(self.simulated_temperature)
-        print(f"Updated sensor data: Humidity={humidity}, Temperature={self.simulated_temperature}")
      
     def load_scheduled_times_from_table(self):
         """Load scheduled times from the table into self.scheduled_times."""
