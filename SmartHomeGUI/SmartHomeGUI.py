@@ -11,7 +11,7 @@ import numpy as np
 import datetime
 
 # from_class =  uic.loadUiType("./IOT_Project_2/iot-repo-2/SmartHomeGUI/SmartHomeGUI.ui")[0]
-from_class =  uic.loadUiType("./SmartHomeGUI/SmartHomeGUI.ui")[0]
+from_class =  uic.loadUiType("/home/jh/dev_ws/PROJECT/iot-repo-2/SmartHomeGUI/SmartHomeGUI.ui")[0]
 
 if hasattr(Qt, 'AA_EnableHighDpiScaling'):
     PyQt5.QtWidgets.QApplication.setAttribute(Qt.AA_EnableHighDpiScaling, True)
@@ -40,24 +40,24 @@ class WindowClass(QMainWindow, from_class):
 
         QTimer.singleShot(100, self.send_gth_command)
 
-        self.controlBtn_AC_toggle.clicked.connect(self.control_AC_toggle)
-        self.controlBtn_AC_toggle.setText('OFF')
-        self.controlBtn_AC_toggle.setStyleSheet("background-color: rgb(255, 255, 255);")
-        self.controlBtn_Heater_toggle.clicked.connect(self.MainHeaterPwrBtn)
-        self.controlBtn_Heater_toggle.setText("OFF")
-        self.controlBtn_Heater_toggle.setStyleSheet("background-color: rgb(255, 255, 255);")
-        self.controlBtn_Dehum_toggle.clicked.connect(self.control_Dehum_toggle)
-        self.controlBtn_Dehum_toggle.setText('OFF')
-        self.controlBtn_Dehum_toggle.setStyleSheet("background-color: rgb(255, 255, 255);")
-        self.controlBtn_Light_toggle.clicked.connect(self.control_Light_toggle)
-        self.controlBtn_Light_toggle.setText('OFF')
-        self.controlBtn_Light_toggle.setStyleSheet("background-color: rgb(255, 255, 255);")
-        self.controlBtn_Blind_toggle.clicked.connect(self.control_Blind_toggle)
-        self.controlBtn_Blind_toggle.setText('Open')
-        self.controlBtn_Blind_toggle.setStyleSheet("background-color: rgb(0, 150, 0);")
-        self.controlBtn_Door_toggle.clicked.connect(self.control_Door_toggle)
-        self.controlBtn_Door_toggle.setText('Open')
-        self.controlBtn_Door_toggle.setStyleSheet("background-color: rgb(0, 150, 0);")
+        # self.controlBtn_AC_toggle.clicked.connect(self.control_AC_toggle)
+        # self.controlBtn_AC_toggle.setText('OFF')
+        # self.controlBtn_AC_toggle.setStyleSheet("background-color: rgb(255, 255, 255);")
+        # self.controlBtn_Heater_toggle.clicked.connect(self.MainHeaterPwrBtn)
+        # self.controlBtn_Heater_toggle.setText("OFF")
+        # self.controlBtn_Heater_toggle.setStyleSheet("background-color: rgb(255, 255, 255);")
+        # self.controlBtn_Dehum_toggle.clicked.connect(self.control_Dehum_toggle)
+        # self.controlBtn_Dehum_toggle.setText('OFF')
+        # self.controlBtn_Dehum_toggle.setStyleSheet("background-color: rgb(255, 255, 255);")
+        # self.controlBtn_Light_toggle.clicked.connect(self.control_Light_toggle)
+        # self.controlBtn_Light_toggle.setText('OFF')
+        # self.controlBtn_Light_toggle.setStyleSheet("background-color: rgb(255, 255, 255);")
+        # self.controlBtn_Blind_toggle.clicked.connect(self.control_Blind_toggle)
+        # self.controlBtn_Blind_toggle.setText('Open')
+        # self.controlBtn_Blind_toggle.setStyleSheet("background-color: rgb(0, 150, 0);")
+        # self.controlBtn_Door_toggle.clicked.connect(self.control_Door_toggle)
+        # self.controlBtn_Door_toggle.setText('Open')
+        # self.controlBtn_Door_toggle.setStyleSheet("background-color: rgb(0, 150, 0);")
         
         self.gth_timer = QTimer(self)
         self.gth_timer.timeout.connect(self.send_gth_command)
@@ -235,6 +235,7 @@ class WindowClass(QMainWindow, from_class):
         
     def OutdoorHeater(self):
         self.controlLine_Heater.setText(str(self.outdoor_heater_setting))
+        self.set_temperature = float(self.controlLine_Heater.text())
         
         if self.outdoor_heater_auto:
             self.turn_heater_on()
@@ -252,6 +253,7 @@ class WindowClass(QMainWindow, from_class):
 
     def IndoorHeater(self):
         self.controlLine_Heater.setText(str(self.indoor_heater_setting))
+        self.set_temperature = float(self.controlLine_Heater.text())
         
         if self.indoor_heater_auto:
             self.turn_heater_on()
@@ -315,7 +317,7 @@ class WindowClass(QMainWindow, from_class):
         req_data = struct.pack('<3sB', command, data) + b'\n'
         print(f"Sending to Heater Arduino: {req_data}")
         try:
-            bytes_written = self.connHeater.write(req_data)  # 테스트를 위해 ac_conn 사용
+            bytes_written = self.connHeater.write(req_data) 
             print(f"Bytes written: {bytes_written}")
             self.connHeater.flush()
             print("Data flushed")
@@ -349,11 +351,11 @@ class WindowClass(QMainWindow, from_class):
         if self.simulated_temperature is None:
             self.simulated_temperature = temperature  # 첫 번째 온도 데이터로 초기화
 
-        if not self.ac_on:
-            self.simulated_temperature = temperature  # AC가 꺼져 있을 때 실제 온도로 업데이트
+        if not self.ac_on and not self.heater_on:
+            self.simulated_temperature = temperature  # 에어컨과 히터가 둘다 꺼져있으면 실제온도로 가져옴
 
         self.lcdTemp.display(self.simulated_temperature)
-        print(f"Updated sensor data: Humidity={humidity}, Temperature={self.simulated_temperature}")
+        print(f"Updated sensor data: Humidity={humidity}, Real Temperature={temperature}, Simulated Temperature={self.simulated_temperature}")
 
     def update_temperature(self):
         if self.simulated_temperature is None or self.last_real_temperature is None:
@@ -382,8 +384,7 @@ class WindowClass(QMainWindow, from_class):
             # 최소 온도 제한
             self.simulated_temperature = max(18.0, self.simulated_temperature)
         elif self.heater_on:
-            heater_set_temp = float(self.controlLine_Heater.text())
-            temp_diff = heater_set_temp - self.simulated_temperature
+            temp_diff = self.set_temperature - self.simulated_temperature
             
             if temp_diff > 2:
                 self.simulated_temperature += 1.0
