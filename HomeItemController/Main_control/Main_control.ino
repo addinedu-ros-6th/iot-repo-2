@@ -41,7 +41,12 @@ void setup() {
   pinMode(IN2Pin, OUTPUT);
   pinMode(ENPin, OUTPUT);
   pinMode(buzzerPin, OUTPUT);
+  pinMode(LightBlue, OUTPUT);
+  pinMode(LightGREEN, OUTPUT);
+  pinMode(LightRED, OUTPUT);
+
   // stepper.setCurrentPosition(0);  // 현재 위치를 0으로 설정, 초기 위치 설정 (옵션)
+
 }
 
 void loop() {
