@@ -32,7 +32,8 @@ IoT 프로젝트 2조 저장소. 스마트홈 자동화 시스템
 |                                | **알람**                     | 요일 별 알람 설정 가능 <br> - Wake-up : 설정된 시간에 알람, 조명, 커튼 ON <br> - Sleep : 설정된 시간에 알람, 조명, 커튼 OFF |
 
 ## 3.2 시스템 설계
-![image](https://github.com/user-attachments/assets/dfae5500-7ca7-4380-bd09-0aef5aafcf32)
+<img src="https://github.com/user-attachments/assets/dfae5500-7ca7-4380-bd09-0aef5aafcf32" alt="Image" width="900" height="700"/>
+
 
 ## 3.3 ui 설계
 ### 외출모드 설정
