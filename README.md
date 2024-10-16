@@ -75,8 +75,12 @@ IoT 프로젝트 2조 저장소. 스마트홈 자동화 시스템
 [Screencast from 10-16-2024 08:50:18 PM.webm](https://github.com/user-attachments/assets/462d61e4-800e-4cad-8235-b7ac53590f5e)
 
   설정 온도에 근접할수록 led색 변화 와 온도변화폭 감소 
-## 4.5 커튼 제어
+
+## 4.5 LED 및 커튼 제어
+
 [Screencast from 10-16-2024 08:33:27 PM.webm](https://github.com/user-attachments/assets/f620eb0b-4ae6-4330-9cfe-3d85bd9430a9)
+
+<img src="https://github.com/user-attachments/assets/a774c4df-9bc9-4580-8c07-d5c4d8d3272b" width="650" />
 
 ## 4.6 Alarm Reservation 작동
 
