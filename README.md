@@ -33,7 +33,7 @@ IoT 프로젝트 2조 저장소. 스마트홈 자동화 시스템
 6. register btn 클릭
 ### reservation
 ![image](https://github.com/user-attachments/assets/942d3f39-76f4-4f80-b612-9f9f443e6c45)
-![image](https://github.com/user-attachments/assets/f11379b4-b6f7-4f6c-a29c-1df016e63838)
+![image](https://github.com/user-attachments/assets/f43345dc-7526-4e92-9674-666758f826ad)
 1. indoor config 탭으로 이동
 2. select day에서 요일 및 시간,기능 선택
 3. save configuration 클릭
