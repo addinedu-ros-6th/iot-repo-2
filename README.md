@@ -80,3 +80,4 @@ IoT 프로젝트 2조 저장소. 스마트홈 자동화 시스템
 
 ## 4.6 Alarm Reservation 작동
 
+[Alarm 예약 제어.webm](https://github.com/user-attachments/assets/df9e4688-e160-44d6-872c-13818555c36a)
