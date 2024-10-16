@@ -43,6 +43,8 @@ IoT 프로젝트 2조 저장소. 스마트홈 자동화 시스템
 
 ## 4 시연 영상
 ## 4.1 UI 
+[Gui.webm](https://github.com/user-attachments/assets/2dbf4d66-cf11-4b51-8525-4fec628cbc3e)
+
 ## 4.2 RFID 등록
 ![rfid](https://github.com/user-attachments/assets/85b1a905-a0b8-4dde-a0b0-a045d6a004f2)
 ## 4.3 RFID 태그에 따른 LCD 
