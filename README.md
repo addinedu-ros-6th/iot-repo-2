@@ -73,6 +73,8 @@ IoT 프로젝트 2조 저장소. 스마트홈 자동화 시스템
 
 ## 4.4 온도에 따른 에어컨 자동제어
 [Screencast from 10-16-2024 08:50:18 PM.webm](https://github.com/user-attachments/assets/462d61e4-800e-4cad-8235-b7ac53590f5e)
+![image](https://github.com/user-attachments/assets/ba4f3f60-f7ab-4d82-aaf8-11e7362d77d3)
+
 
   설정 온도에 근접할수록 led색 변화 와 온도변화폭 감소 
 
