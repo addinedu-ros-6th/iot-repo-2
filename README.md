@@ -50,6 +50,7 @@ IoT 프로젝트 2조 저장소. 스마트홈 자동화 시스템
 ![opendoor](https://github.com/user-attachments/assets/5da433bd-bf27-44cb-b813-9545dd14cb8c)
 ## 4.4 온도에 따른 에어컨 자동제어
 ## 4.5 커튼 제어
-![GIFMaker_me](https://github.com/user-attachments/assets/9cd30f2a-2ecc-4c9e-b443-7439c68b6bbc)
+![GIFMaker_me (7)](https://github.com/user-attachments/assets/a5c11cb1-3128-48f1-8dc0-70c39bf23999)
+
 
 ## 4.6 Alarm Reservation 작동
