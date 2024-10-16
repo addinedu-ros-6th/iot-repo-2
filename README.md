@@ -69,11 +69,11 @@ IoT 프로젝트 2조 저장소. 스마트홈 자동화 시스템
 [opendoor.webm](https://github.com/user-attachments/assets/70ab115c-16e1-4c17-8ff8-f1d00c6bf166)
 
 ## 4.4 온도에 따른 에어컨 자동제어
-![GIFMaker_me (10)](https://github.com/user-attachments/assets/c74a62b1-56fb-433c-b0ff-204cdb233e59)
+
   
   설정 온도에 근접할수록 led색 변화 와 온도변화폭 감소 
 ## 4.5 커튼 제어
-![GIFMaker_me (7)](https://github.com/user-attachments/assets/a5c11cb1-3128-48f1-8dc0-70c39bf23999)
-
+[Screencast from 10-16-2024 08:33:27 PM.webm](https://github.com/user-attachments/assets/f620eb0b-4ae6-4330-9cfe-3d85bd9430a9)
 
 ## 4.6 Alarm Reservation 작동
+
