@@ -31,9 +31,16 @@ IoT 프로젝트 2조 저장소. 스마트홈 자동화 시스템
 4. user name 입력
 5. activation btn 클릭
 6. register btn 클릭
-
-
+### reservation
+![image](https://github.com/user-attachments/assets/942d3f39-76f4-4f80-b612-9f9f443e6c45)
+![image](https://github.com/user-attachments/assets/f11379b4-b6f7-4f6c-a29c-1df016e63838)
+1. indoor config 탭으로 이동
+2. select day에서 요일 및 시간,기능 선택
+3. save configuration 클릭
+4. table widget에 해당 기록 확인
 ## 3.4 DB 설계
+![image](https://github.com/user-attachments/assets/a407489b-787e-4dfc-9163-76a0d1823b3a)
+
 ## 4 시연 영상
 ## 4.1 UI 
 ## 4.2 RFID 등록
@@ -41,4 +48,6 @@ IoT 프로젝트 2조 저장소. 스마트홈 자동화 시스템
 ## 4.4 Door Lock/UnLock
 ## 4.4 온도에 따른 에어컨 자동제어
 ## 4.5 커튼 제어
+![GIFMaker_me](https://github.com/user-attachments/assets/9cd30f2a-2ecc-4c9e-b443-7439c68b6bbc)
+
 ## 4.6 Alarm Reservation 작동
