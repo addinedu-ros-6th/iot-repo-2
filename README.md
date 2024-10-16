@@ -46,9 +46,11 @@ IoT 프로젝트 2조 저장소. 스마트홈 자동화 시스템
 [Gui.webm](https://github.com/user-attachments/assets/2dbf4d66-cf11-4b51-8525-4fec628cbc3e)
 
 ## 4.2 RFID 등록
-![rfid](https://github.com/user-attachments/assets/85b1a905-a0b8-4dde-a0b0-a045d6a004f2)
+
 ## 4.3 RFID 태그에 따른 LCD 
 ## 4.4 Door Lock/UnLock
+[opendoor.webm](https://github.com/user-attachments/assets/70ab115c-16e1-4c17-8ff8-f1d00c6bf166)
+
 ## 4.4 온도에 따른 에어컨 자동제어
 ![GIFMaker_me (10)](https://github.com/user-attachments/assets/c74a62b1-56fb-433c-b0ff-204cdb233e59)
   
