@@ -3,7 +3,7 @@ IoT 프로젝트 2조 저장소. 스마트홈 자동화 시스템
 ## 1.주제
 다양한 가전제품과 기기를 인터넷에 연결해 사용자가 원격으로 제어하고 자동화 할수 있는 시스템을 구축하는것을 목표
 
-<img src="https://github.com/user-attachments/assets/cfc6e7cd-015c-4695-b0b7-901b68ea8567" width="435"/> <img src="https://github.com/user-attachments/assets/f6dac7f0-b4cc-40b8-abe5-5a32efa9427e" width="455"/>
+<img src="https://github.com/user-attachments/assets/cfc6e7cd-015c-4695-b0b7-901b68ea8567" width="400"/> <img src="https://github.com/user-attachments/assets/f6dac7f0-b4cc-40b8-abe5-5a32efa9427e" width="420"/>
 
 ## 팀원
 |이름|담당|
@@ -35,7 +35,7 @@ IoT 프로젝트 2조 저장소. 스마트홈 자동화 시스템
 |                                | **알람**                     | 요일 별 알람 설정 가능 <br> - Wake-up : 설정된 시간에 알람, 조명, 커튼 ON <br> - Sleep : 설정된 시간에 알람, 조명, 커튼 OFF |
 
 ## 3.2 시스템 설계
-<img src="https://github.com/user-attachments/assets/dfae5500-7ca7-4380-bd09-0aef5aafcf32" alt="Image" width="850" height="650"/>
+<img src="https://github.com/user-attachments/assets/dfae5500-7ca7-4380-bd09-0aef5aafcf32" alt="Image" width="650" height="500"/>
 
 
 ## 3.3 ui 설계
