@@ -19,6 +19,20 @@ IoT 프로젝트 2조 저장소. 스마트홈 자동화 시스템
 ## 3.1 기능리스트
 ## 3.2 시스템 설계
 ## 3.3 ui 설계
+외출모드 설정
+![image](https://github.com/user-attachments/assets/bc22fba4-b1a6-41c7-a70d-5254f33ca1e9)
+집콕모드 설정
+![image](https://github.com/user-attachments/assets/3bb57cde-89a6-4948-9eea-0991017ab5fd)
+rfid 등록
+![image](https://github.com/user-attachments/assets/c041ad00-81a2-45b8-9cab-eb7c96aa9256)
+1. registration 탭으로 이동
+2. register btn색상을 통해 rifd tag 상태 확인
+3. rfid uid 입력(최대 8글자)
+4. user name 입력
+5. activation btn 클릭
+6. register btn 클릭
+
+
 ## 3.4 DB 설계
 ## 4 시연 영상
 ## 4.1 UI 
