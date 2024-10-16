@@ -17,6 +17,8 @@ IoT 프로젝트 2조 저장소. 스마트홈 자동화 시스템
 
 ## 3.설계
 ## 3.1 기능리스트
+![Screenshot from 2024-10-16 19-40-56](https://github.com/user-attachments/assets/ac7709d4-5b52-4eb2-b1cf-e624f26c7b0a)
+
 ## 3.2 시스템 설계
 ## 3.3 ui 설계
 ### 외출모드 설정
