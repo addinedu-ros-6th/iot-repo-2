@@ -68,7 +68,7 @@ IoT 프로젝트 2조 저장소. 스마트홈 자동화 시스템
 ## 4.2 RFID 등록
 [card_registration.webm](https://github.com/user-attachments/assets/263e7c94-74c7-4204-8c24-9f12a471a38d)
 
-![Screenshot from 2024-10-17 10-42-21](https://github.com/user-attachments/assets/409d5012-40f1-4498-9c9b-9e32cd522e98)
+![Screenshot from 2024-10-18 13-50-07](https://github.com/user-attachments/assets/f1669b0d-7866-4b2b-a56e-a163b538b679)
 
 ## 4.3 RFID 태그에 따른 LCD 
 [RFID_LCD.webm](https://github.com/user-attachments/assets/b51aedf6-63be-4ffb-a414-0217388a537a)
